@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Device Information</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: #ffffff;
+      width: 90%;
+      max-width: 400px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+    .card h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .row:last-child {
+      border-bottom: none;
+    }
+    .label {
+      font-weight: bold;
+      color: #555;
+    }
+    .value {
+      color: #000;
+      text-align: right;
+      max-width: 60%;
+      word-break: break-word;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h2>Device Information</h2>
+
+    <div class="row">
+      <div class="label">Name</div>
+      <div class="value" id="name"></div>
+    </div>
+
+    <div class="row">
+      <div class="label">Serial No.</div>
+      <div class="value" id="serial"></div>
+    </div>
+
+    <div class="row">
+      <div class="label">Brand</div>
+      <div class="value" id="brand"></div>
+    </div>
+
+    <div class="row">
+      <div class="label">Model</div>
+      <div class="value" id="model"></div>
+    </div>
+
+    <div class="row">
+      <div class="label">Department</div>
+      <div class="value" id="department"></div>
+    </div>
+
+    <div class="row">
+      <div class="label">Last PM</div>
+      <div class="value" id="lastpm"></div>
+    </div>
+  </div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+
+  document.getElementById("name").textContent = params.get("name") || "-";
+  document.getElementById("serial").textContent = params.get("serial") || "-";
+  document.getElementById("brand").textContent = params.get("brand") || "-";
+  document.getElementById("model").textContent = params.get("model") || "-";
+  document.getElementById("department").textContent = params.get("dept") || "-";
+  document.getElementById("lastpm").textContent = params.get("pm") || "-";
+</script>
+
+</body>
+</html>
