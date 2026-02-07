@@ -64,8 +64,8 @@
     </div>
 
     <div class="row">
-      <div class="label">Brand</div>
-      <div class="value" id="brand"></div>
+      <div class="label">Manufature</div>
+      <div class="value" id="manfu"></div>
     </div>
 
     <div class="row">
@@ -82,6 +82,21 @@
       <div class="label">Last PM</div>
       <div class="value" id="lastpm"></div>
     </div>
+
+    <div class="row">
+      <div class="label">Next PM</div>
+      <div class="value" id="nextpm"></div>
+    </div>
+
+    <div class="row">
+      <div class="label">Last Calibration</div>
+      <div class="value" id="lastcal"></div>
+    </div>
+
+    <div class="row">
+      <div class="label">Next Calibration</div>
+      <div class="value" id="nextcal"></div>
+    </div>
   </div>
 
 <script>
@@ -89,10 +104,13 @@
 
   document.getElementById("name").textContent = params.get("name") || "-";
   document.getElementById("serial").textContent = params.get("serial") || "-";
-  document.getElementById("brand").textContent = params.get("brand") || "-";
+  document.getElementById("manfu").textContent = params.get("manfu") || "-";
   document.getElementById("model").textContent = params.get("model") || "-";
   document.getElementById("department").textContent = params.get("dept") || "-";
-  document.getElementById("lastpm").textContent = params.get("pm") || "-";
+  document.getElementById("lastpm").textContent = params.get("lastpm") || "-";
+  document.getElementById("nextpm").textContent = params.get("nextpm") || "-";
+  document.getElementById("lastcal").textContent = params.get("lastcal") || "-";
+  document.getElementById("nextcal").textContent = params.get("nextcal") || "-";
 </script>
 
 </body>
