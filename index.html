@@ -326,22 +326,25 @@
     });
   }
 
-  // Parses "December/25" or "December/2025" → Date object (last day of that month)
+  // Parses "December/25", "Dec/25", "June/2026" → Date object (last day of that month)
   function parseDateFlexible(str) {
     if (!str) return null;
     str = str.trim();
 
-    // Format: "MonthName/YY" or "MonthName/YYYY"  e.g. "December/25" or "March/2026"
+    // Format: "MonthName/YY" or "Abbrev/YY" e.g. "December/25", "Jun/26", "March/2026"
     const monthYearMatch = str.match(/^([A-Za-z]+)[\/\-\s](\d{2,4})$/);
     if (monthYearMatch) {
-      const monthNames = ["january","february","march","april","may","june",
+      const fullNames  = ["january","february","march","april","may","june",
                           "july","august","september","october","november","december"];
-      const mIdx = monthNames.indexOf(monthYearMatch[1].toLowerCase());
+      const shortNames = ["jan","feb","mar","apr","may","jun",
+                          "jul","aug","sep","oct","nov","dec"];
+      const mStr = monthYearMatch[1].toLowerCase();
+      let mIdx = fullNames.indexOf(mStr);
+      if (mIdx === -1) mIdx = shortNames.indexOf(mStr.slice(0, 3));
       if (mIdx !== -1) {
         let year = parseInt(monthYearMatch[2]);
-        if (year < 100) year += 2000; // "25" → 2025
-        // Use last day of that month as the due date
-        return new Date(year, mIdx + 1, 0);
+        if (year < 100) year += 2000;
+        return new Date(year, mIdx + 1, 0); // last day of that month
       }
     }
 
@@ -349,8 +352,8 @@
     const parts = str.split(/[\/\-\.]/);
     if (parts.length === 3) {
       const a = parseInt(parts[0]), b = parseInt(parts[1]), c = parseInt(parts[2]);
-      if (a > 1000) return new Date(a, b - 1, c);   // YYYY-MM-DD
-      if (c > 1000) return new Date(c, b - 1, a);   // DD/MM/YYYY
+      if (a > 1000) return new Date(a, b - 1, c);
+      if (c > 1000) return new Date(c, b - 1, a);
     }
     return new Date(str);
   }
@@ -367,12 +370,22 @@
 
   function formatDate(str) {
     if (!str) return null;
-    // If it's Month/YY format, just display it nicely as "Dec 2025"
     const monthYearMatch = str.trim().match(/^([A-Za-z]+)[\/\-\s](\d{2,4})$/);
     if (monthYearMatch) {
       let year = parseInt(monthYearMatch[2]);
       if (year < 100) year += 2000;
-      return `${monthYearMatch[1].charAt(0).toUpperCase() + monthYearMatch[1].slice(1).toLowerCase()} ${year}`;
+      const fullNames  = ["january","february","march","april","may","june",
+                          "july","august","september","october","november","december"];
+      const shortNames = ["jan","feb","mar","apr","may","jun",
+                          "jul","aug","sep","oct","nov","dec"];
+      const mStr = monthYearMatch[1].toLowerCase();
+      let mIdx = fullNames.indexOf(mStr);
+      if (mIdx === -1) mIdx = shortNames.indexOf(mStr.slice(0, 3));
+      if (mIdx !== -1) {
+        const monthLabel = ["Jan","Feb","Mar","Apr","May","Jun",
+                            "Jul","Aug","Sep","Oct","Nov","Dec"][mIdx];
+        return `${monthLabel} ${year}`;
+      }
     }
     const d = parseDateFlexible(str);
     if (!d || isNaN(d)) return str;
