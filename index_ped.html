@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Device Info — Shefa El-Orman</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #f4f6f9;
+      --surface: #ffffff;
+      --border: #dde2ea;
+      --accent: #1a5276;
+      --accent-light: #d6e4f0;
+      --accent-mid: #2980b9;
+      --text-primary: #1a2333;
+      --text-secondary: #5a6a80;
+      --text-muted: #9aaabb;
+      --ok: #1e8449;
+      --ok-bg: #d5f0e0;
+      --warn: #b7770d;
+      --warn-bg: #fef3cd;
+      --danger: #c0392b;
+      --danger-bg: #fde8e6;
+      --mono: 'IBM Plex Mono', monospace;
+      --sans: 'IBM Plex Sans', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--accent);
+      color: #fff;
+      padding: 18px 24px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .logo-icon {
+      width: 38px; height: 38px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .logo-icon svg { width: 22px; height: 22px; }
+    .header-text h1 {
+      font-size: 15px; font-weight: 600; letter-spacing: 0.02em;
+    }
+    .header-text p {
+      font-size: 12px; opacity: 0.7; margin-top: 1px;
+      font-family: var(--mono);
+    }
+
+    /* ── Main container ── */
+    .container {
+      max-width: 680px;
+      margin: 28px auto;
+      padding: 0 16px 40px;
+    }
+
+    /* ── States ── */
+    .state-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 48px 32px;
+      text-align: center;
+    }
+    .state-icon {
+      font-size: 40px; margin-bottom: 14px;
+    }
+    .state-card h2 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+    .state-card p  { color: var(--text-secondary); font-size: 14px; line-height: 1.6; }
+
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid var(--accent-light);
+      border-top-color: var(--accent-mid);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Device Card ── */
+    .device-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      animation: fadeUp 0.4s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Card top banner */
+    .card-banner {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-mid) 100%);
+      padding: 22px 24px 20px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .card-banner::before {
+      content: '';
+      position: absolute; top: -30px; right: -30px;
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+    }
+    .card-banner::after {
+      content: '';
+      position: absolute; bottom: -40px; right: 40px;
+      width: 90px; height: 90px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+    }
+    .device-name {
+      font-size: 20px; font-weight: 600; line-height: 1.3;
+      margin-bottom: 6px;
+    }
+    .serial-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.05em;
+    }
+
+    /* Sections */
+    .card-section {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .card-section:last-child { border-bottom: none; }
+
+    .section-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+
+    /* Grid of fields */
+    .fields-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px 20px;
+    }
+    .fields-grid.single { grid-template-columns: 1fr; }
+
+    .field {}
+    .field-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-bottom: 3px;
+      letter-spacing: 0.03em;
+    }
+    .field-value {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .field-value.mono {
+      font-family: var(--mono);
+      font-size: 13px;
+    }
+    .field-value.empty {
+      color: var(--text-muted);
+      font-style: italic;
+      font-weight: 400;
+    }
+
+    /* Date row with status pill */
+    .date-row {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .pill-ok     { background: var(--ok-bg);     color: var(--ok); }
+    .pill-warn   { background: var(--warn-bg);   color: var(--warn); }
+    .pill-danger { background: var(--danger-bg); color: var(--danger); }
+
+    /* Footer */
+    .card-footer {
+      padding: 14px 24px;
+      background: #f9fafc;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .footer-text {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .footer-text span { font-family: var(--mono); }
+
+    @media (max-width: 480px) {
+      .fields-grid { grid-template-columns: 1fr; }
+      .card-banner { padding: 18px 18px 16px; }
+      .card-section { padding: 16px 18px; }
+      .card-footer  { padding: 12px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+    </svg>
+  </div>
+  <div class="header-text">
+    <h1>Shefa El-Orman Hospital</h1>
+    <p>Medical Equipment Registry</p>
+  </div>
+</header>
+
+<div class="container">
+  <div id="app"></div>
+</div>
+
+<script>
+  // ── Config ──────────────────────────────────────────────────────────────────
+  const SHEET_CSV_URL =
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vQxsHbirrqOd1h4W_TtvhphYMz4M9_1aN7h7E9RLq21v1qNLMis888i2o4Vx6SzZA/pub?gid=414073608&single=true&output=csv";
+
+  // Map: display label → exact CSV column header (case-sensitive, must match your sheet)
+  const COLUMN_MAP = {
+    "Item Name"           : "Item Name (English)",
+    "Serial Number"       : "Serial number",
+    "Manufacturer"        : "Manuf.",
+    "Model"               : "Model",
+    "Department"          : "Depart.",
+    "Last PM Date"        : "PM date",
+    "PM Due Date"         : "PM Due date",
+    "Calibration Date"    : "Calibration Date",
+    "Next Calibration"    : "Next Calibration",
+  };
+
+  // Which column is the lookup key (must match COLUMN_MAP value above)
+  const ID_COLUMN = "Serial number";
+
+  // Date columns — used to compute status pills
+  const DUE_DATE_COLS = ["PM Due date", "Next Calibration"];
+  // ────────────────────────────────────────────────────────────────────────────
+
+  const app = document.getElementById("app");
+
+  function render(html) { app.innerHTML = html; }
+
+  function loading() {
+    render(`<div class="state-card">
+      <div class="spinner"></div>
+      <h2>Loading device data…</h2>
+      <p>Fetching from Google Sheets</p>
+    </div>`);
+  }
+
+  function error(title, msg) {
+    render(`<div class="state-card">
+      <div class="state-icon">⚠️</div>
+      <h2>${title}</h2>
+      <p>${msg}</p>
+    </div>`);
+  }
+
+  function parseCSV(text) {
+    const lines = text.trim().split("\n");
+    const rawHeaders = lines[0].split(",").map(h => h.replace(/^"|"$/g, "").trim());
+
+    // Normalize: lowercase + collapse spaces → actual header string
+    const headerNorm = {};
+    rawHeaders.forEach(h => { headerNorm[h.toLowerCase().replace(/\s+/g, " ")] = h; });
+
+    // Re-resolve every value in COLUMN_MAP to the actual header in the sheet
+    Object.keys(COLUMN_MAP).forEach(label => {
+      const wanted = COLUMN_MAP[label].toLowerCase().replace(/\s+/g, " ");
+      if (headerNorm[wanted]) COLUMN_MAP[label] = headerNorm[wanted];
+    });
+    // Resolve ID_COLUMN too
+    const idNorm = ID_COLUMN.toLowerCase().replace(/\s+/g, " ");
+    if (headerNorm[idNorm]) window._resolvedIdCol = headerNorm[idNorm];
+    else window._resolvedIdCol = ID_COLUMN;
+
+    return lines.slice(1).map(line => {
+      const cols = [];
+      let cur = "", inQ = false;
+      for (let i = 0; i < line.length; i++) {
+        const c = line[i];
+        if (c === '"') { inQ = !inQ; continue; }
+        if (c === ',' && !inQ) { cols.push(cur.trim()); cur = ""; continue; }
+        cur += c;
+      }
+      cols.push(cur.trim());
+      const row = {};
+      rawHeaders.forEach((h, i) => row[h] = (cols[i] || "").trim());
+      return row;
+    });
+  }
+
+  // Parses "December/25", "Dec/25", "June/2026" → Date object (last day of that month)
+  function parseDateFlexible(str) {
+    if (!str) return null;
+    str = str.trim();
+
+    // Format: "MonthName/YY" or "Abbrev/YY" e.g. "December/25", "Jun/26", "March/2026"
+    const monthYearMatch = str.match(/^([A-Za-z]+)[\/\-\s](\d{2,4})$/);
+    if (monthYearMatch) {
+      const fullNames  = ["january","february","march","april","may","june",
+                          "july","august","september","october","november","december"];
+      const shortNames = ["jan","feb","mar","apr","may","jun",
+                          "jul","aug","sep","oct","nov","dec"];
+      const mStr = monthYearMatch[1].toLowerCase();
+      let mIdx = fullNames.indexOf(mStr);
+      if (mIdx === -1) mIdx = shortNames.indexOf(mStr.slice(0, 3));
+      if (mIdx !== -1) {
+        let year = parseInt(monthYearMatch[2]);
+        if (year < 100) year += 2000;
+        return new Date(year, mIdx + 1, 0); // last day of that month
+      }
+    }
+
+    // Fallback: numeric formats DD/MM/YYYY or YYYY-MM-DD
+    const parts = str.split(/[\/\-\.]/);
+    if (parts.length === 3) {
+      const a = parseInt(parts[0]), b = parseInt(parts[1]), c = parseInt(parts[2]);
+      if (a > 1000) return new Date(a, b - 1, c);
+      if (c > 1000) return new Date(c, b - 1, a);
+    }
+    return new Date(str);
+  }
+
+  function dateStatus(dateStr) {
+    const d = parseDateFlexible(dateStr);
+    if (!d || isNaN(d)) return null;
+    const now = new Date();
+    const diff = (d - now) / (1000 * 60 * 60 * 24); // days
+    if (diff < 0)   return { cls: "pill-danger", icon: "●", label: "Overdue" };
+    if (diff < 30)  return { cls: "pill-warn",   icon: "●", label: "Due soon" };
+    return           { cls: "pill-ok",    icon: "●", label: "On track" };
+  }
+
+  function formatDate(str) {
+    if (!str) return null;
+    const monthYearMatch = str.trim().match(/^([A-Za-z]+)[\/\-\s](\d{2,4})$/);
+    if (monthYearMatch) {
+      let year = parseInt(monthYearMatch[2]);
+      if (year < 100) year += 2000;
+      const fullNames  = ["january","february","march","april","may","june",
+                          "july","august","september","october","november","december"];
+      const shortNames = ["jan","feb","mar","apr","may","jun",
+                          "jul","aug","sep","oct","nov","dec"];
+      const mStr = monthYearMatch[1].toLowerCase();
+      let mIdx = fullNames.indexOf(mStr);
+      if (mIdx === -1) mIdx = shortNames.indexOf(mStr.slice(0, 3));
+      if (mIdx !== -1) {
+        const monthLabel = ["Jan","Feb","Mar","Apr","May","Jun",
+                            "Jul","Aug","Sep","Oct","Nov","Dec"][mIdx];
+        return `${monthLabel} ${year}`;
+      }
+    }
+    const d = parseDateFlexible(str);
+    if (!d || isNaN(d)) return str;
+    return d.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+  }
+
+  function val(v) {
+    if (!v || v === "" || v === "-") return `<span class="field-value empty">—</span>`;
+    return `<span class="field-value">${v}</span>`;
+  }
+
+  function dateVal(rawKey, displayStr) {
+    if (!displayStr || displayStr === "" || displayStr === "-")
+      return `<span class="field-value empty">—</span>`;
+
+    const isDue = DUE_DATE_COLS.includes(rawKey);
+    const status = isDue ? dateStatus(displayStr) : null;
+    const pill = status
+      ? `<span class="status-pill ${status.cls}">${status.icon} ${status.label}</span>`
+      : "";
+
+    return `<div class="date-row">
+      <span class="field-value">${formatDate(displayStr)}</span>
+      ${pill}
+    </div>`;
+  }
+
+  function buildCard(row) {
+    const name   = row[COLUMN_MAP["Item Name"]]    || "Unknown Device";
+    const serial = row[COLUMN_MAP["Serial Number"]] || "—";
+
+    // Info section fields
+    const infoFields = [
+      { label: "Manufacturer", key: "Manuf.",  mono: false },
+      { label: "Model",        key: "Model",   mono: true  },
+      { label: "Department",   key: "Depart.", mono: false },
+    ];
+
+    // Date section fields
+    const dateFields = [
+      { label: "Last PM",       rawKey: "PM date",           key: COLUMN_MAP["Last PM Date"] },
+      { label: "PM Due",        rawKey: "PM Due date",       key: COLUMN_MAP["PM Due Date"] },
+      { label: "Last Calib.",   rawKey: "Calibration Date",  key: COLUMN_MAP["Calibration Date"] },
+      { label: "Next Calib.",   rawKey: "Next Calibration",  key: COLUMN_MAP["Next Calibration"] },
+    ];
+
+    const infoHTML = infoFields.map(f => `
+      <div class="field">
+        <div class="field-label">${f.label}</div>
+        ${val(row[f.key])}
+      </div>`).join("");
+
+    const dateHTML = dateFields.map(f => `
+      <div class="field">
+        <div class="field-label">${f.label}</div>
+        ${dateVal(f.rawKey, row[f.key])}
+      </div>`).join("");
+
+    const now = new Date().toLocaleDateString("en-GB", { day:"2-digit", month:"short", year:"numeric" });
+
+    return `
+    <div class="device-card">
+      <div class="card-banner">
+        <div class="device-name">${name}</div>
+        <div class="serial-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          S/N: ${serial}
+        </div>
+      </div>
+
+      <div class="card-section">
+        <div class="section-label">Device Info</div>
+        <div class="fields-grid">${infoHTML}</div>
+      </div>
+
+      <div class="card-section">
+        <div class="section-label">Maintenance &amp; Calibration</div>
+        <div class="fields-grid">${dateHTML}</div>
+      </div>
+
+      <div class="card-footer">
+        <span class="footer-text">Shefa El-Orman Hospital · Clinical Engineering</span>
+        <span class="footer-text">Fetched <span>${now}</span></span>
+      </div>
+    </div>`;
+  }
+
+  async function main() {
+    // 1. Get serial number from URL ?id=
+    const params = new URLSearchParams(window.location.search);
+    const deviceId = params.get("id");
+
+    if (!deviceId) {
+      error("No Device ID", "This page requires a device serial number in the URL.<br><br>Example: <code>index.html?id=SN-12345</code>");
+      return;
+    }
+
+    loading();
+
+    // 2. Fetch CSV
+    let rows;
+    try {
+      const res = await fetch(SHEET_CSV_URL);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const text = await res.text();
+      rows = parseCSV(text);
+    } catch (e) {
+      error("Could not load data", `Failed to fetch from Google Sheets.<br><small>${e.message}</small>`);
+      return;
+    }
+
+    // 3. Find matching row (case-insensitive, uses resolved column name)
+    const idCol = window._resolvedIdCol || ID_COLUMN;
+    const row = rows.find(r =>
+      (r[idCol] || "").toLowerCase().trim() === deviceId.toLowerCase().trim()
+    );
+
+    if (!row) {
+      error("Device Not Found", `No device found with serial number: <strong>${deviceId}</strong><br><br>Please check the QR code or contact Clinical Engineering.`);
+      return;
+    }
+
+    // 4. Render
+    render(buildCard(row));
+  }
+
+  main();
+</script>
+</body>
+</html>
+```
