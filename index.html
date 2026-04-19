@@ -294,9 +294,23 @@
 
   function parseCSV(text) {
     const lines = text.trim().split("\n");
-    const headers = lines[0].split(",").map(h => h.replace(/^"|"$/g, "").trim());
+    const rawHeaders = lines[0].split(",").map(h => h.replace(/^"|"$/g, "").trim());
+
+    // Normalize: lowercase + collapse spaces → actual header string
+    const headerNorm = {};
+    rawHeaders.forEach(h => { headerNorm[h.toLowerCase().replace(/\s+/g, " ")] = h; });
+
+    // Re-resolve every value in COLUMN_MAP to the actual header in the sheet
+    Object.keys(COLUMN_MAP).forEach(label => {
+      const wanted = COLUMN_MAP[label].toLowerCase().replace(/\s+/g, " ");
+      if (headerNorm[wanted]) COLUMN_MAP[label] = headerNorm[wanted];
+    });
+    // Resolve ID_COLUMN too
+    const idNorm = ID_COLUMN.toLowerCase().replace(/\s+/g, " ");
+    if (headerNorm[idNorm]) window._resolvedIdCol = headerNorm[idNorm];
+    else window._resolvedIdCol = ID_COLUMN;
+
     return lines.slice(1).map(line => {
-      // Handle quoted fields with commas inside
       const cols = [];
       let cur = "", inQ = false;
       for (let i = 0; i < line.length; i++) {
@@ -307,25 +321,36 @@
       }
       cols.push(cur.trim());
       const row = {};
-      headers.forEach((h, i) => row[h] = (cols[i] || "").trim());
+      rawHeaders.forEach((h, i) => row[h] = (cols[i] || "").trim());
       return row;
     });
   }
 
+  // Parses "December/25" or "December/2025" → Date object (last day of that month)
   function parseDateFlexible(str) {
     if (!str) return null;
-    // Try MM/DD/YYYY, DD/MM/YYYY, YYYY-MM-DD, and natural formats
+    str = str.trim();
+
+    // Format: "MonthName/YY" or "MonthName/YYYY"  e.g. "December/25" or "March/2026"
+    const monthYearMatch = str.match(/^([A-Za-z]+)[\/\-\s](\d{2,4})$/);
+    if (monthYearMatch) {
+      const monthNames = ["january","february","march","april","may","june",
+                          "july","august","september","october","november","december"];
+      const mIdx = monthNames.indexOf(monthYearMatch[1].toLowerCase());
+      if (mIdx !== -1) {
+        let year = parseInt(monthYearMatch[2]);
+        if (year < 100) year += 2000; // "25" → 2025
+        // Use last day of that month as the due date
+        return new Date(year, mIdx + 1, 0);
+      }
+    }
+
+    // Fallback: numeric formats DD/MM/YYYY or YYYY-MM-DD
     const parts = str.split(/[\/\-\.]/);
     if (parts.length === 3) {
-      // Guess: if first part > 12, it's day-first
       const a = parseInt(parts[0]), b = parseInt(parts[1]), c = parseInt(parts[2]);
-      if (c > 1000) {
-        // YYYY last → DD/MM/YYYY
-        return new Date(c, b - 1, a);
-      } else {
-        // YYYY first → YYYY-MM-DD
-        return new Date(a, b - 1, c);
-      }
+      if (a > 1000) return new Date(a, b - 1, c);   // YYYY-MM-DD
+      if (c > 1000) return new Date(c, b - 1, a);   // DD/MM/YYYY
     }
     return new Date(str);
   }
@@ -341,6 +366,14 @@
   }
 
   function formatDate(str) {
+    if (!str) return null;
+    // If it's Month/YY format, just display it nicely as "Dec 2025"
+    const monthYearMatch = str.trim().match(/^([A-Za-z]+)[\/\-\s](\d{2,4})$/);
+    if (monthYearMatch) {
+      let year = parseInt(monthYearMatch[2]);
+      if (year < 100) year += 2000;
+      return `${monthYearMatch[1].charAt(0).toUpperCase() + monthYearMatch[1].slice(1).toLowerCase()} ${year}`;
+    }
     const d = parseDateFlexible(str);
     if (!d || isNaN(d)) return str;
     return d.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
@@ -451,9 +484,10 @@
       return;
     }
 
-    // 3. Find matching row (case-insensitive)
+    // 3. Find matching row (case-insensitive, uses resolved column name)
+    const idCol = window._resolvedIdCol || ID_COLUMN;
     const row = rows.find(r =>
-      (r[ID_COLUMN] || "").toLowerCase().trim() === deviceId.toLowerCase().trim()
+      (r[idCol] || "").toLowerCase().trim() === deviceId.toLowerCase().trim()
     );
 
     if (!row) {
