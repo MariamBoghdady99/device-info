@@ -280,7 +280,7 @@
     render(`<div class="state-card">
       <div class="spinner"></div>
       <h2>Loading device data…</h2>
-      <p>Fetching from Google Sheets</p>
+      <p>Fetching from the database</p>
     </div>`);
   }
 
@@ -493,7 +493,7 @@
       const text = await res.text();
       rows = parseCSV(text);
     } catch (e) {
-      error("Could not load data", `Failed to fetch from Google Sheets.<br><small>${e.message}</small>`);
+      error("Could not load data", `Failed to fetch from The Database.<br><small>${e.message}</small>`);
       return;
     }
 
