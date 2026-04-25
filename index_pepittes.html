@@ -254,7 +254,7 @@
 
   // Map: display label → exact CSV column header (case-sensitive, must match your sheet)
   const COLUMN_MAP = {
-    "Item Name"           : "Equipment ",
+    "Equipment"           : "Equipment",
     "Pipette ID"          : "Pipette ID",
     "Brand"               : "Brand",
     "Type"                : "Type (Fixed/Variable)",
@@ -413,7 +413,7 @@
   }
 
   function buildCard(row) {
-    const name   = row[COLUMN_MAP["Equipment "]]    || "Unknown Device";
+    const name   = row[COLUMN_MAP["Equipment"]]    || "Unknown Device";
     const serial = row[COLUMN_MAP["Pipette ID"]] || "—";
 
     // Info section fields
