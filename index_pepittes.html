@@ -254,22 +254,21 @@
 
   // Map: display label → exact CSV column header (case-sensitive, must match your sheet)
   const COLUMN_MAP = {
-    "Item Name"           : "Item Name (English)",
-    "Serial Number"       : "Serial number",
-    "Manufacturer"        : "Manuf.",
-    "Model"               : "Model",
-    "Department"          : "Depart.",
-    "Last PM Date"        : "PM date",
-    "PM Due Date"         : "PM Due date",
+    "Item Name"           : "Equipment ",
+    "Pipette ID"          : "Pipette ID",
+    "Brand"               : "Brand",
+    "Type"                : "Type (Fixed/Variable)",
+    "Unit"                : "Unit",
+    "Size (uL)"           : "Size (uL)",
     "Calibration Date"    : "Calibration Date",
     "Next Calibration"    : "Next Calibration",
   };
 
   // Which column is the lookup key (must match COLUMN_MAP value above)
-  const ID_COLUMN = "Serial number";
+  const ID_COLUMN = "Pipette ID";
 
   // Date columns — used to compute status pills
-  const DUE_DATE_COLS = ["PM Due date", "Next Calibration"];
+  const DUE_DATE_COLS = ["Next Calibration"];
   // ────────────────────────────────────────────────────────────────────────────
 
   const app = document.getElementById("app");
@@ -415,19 +414,18 @@
 
   function buildCard(row) {
     const name   = row[COLUMN_MAP["Item Name"]]    || "Unknown Device";
-    const serial = row[COLUMN_MAP["Serial Number"]] || "—";
+    const serial = row[COLUMN_MAP["Pipette ID"]] || "—";
 
     // Info section fields
     const infoFields = [
-      { label: "Manufacturer", key: "Manuf.",  mono: false },
-      { label: "Model",        key: "Model",   mono: true  },
-      { label: "Department",   key: "Depart.", mono: false },
+      { label: "Brand", key: "Brand",  mono: false },
+      { label: "Type",        key: "Type (Fixed/Variable)",   mono: true  },
+      { label: "Size (uL)",   key: "Size (uL)", mono: false },
+      { label: "Unit",   key: "Unit", mono: false },
     ];
 
     // Date section fields
     const dateFields = [
-      { label: "Last PM",       rawKey: "PM date",           key: COLUMN_MAP["Last PM Date"] },
-      { label: "PM Due",        rawKey: "PM Due date",       key: COLUMN_MAP["PM Due Date"] },
       { label: "Last Calib.",   rawKey: "Calibration Date",  key: COLUMN_MAP["Calibration Date"] },
       { label: "Next Calib.",   rawKey: "Next Calibration",  key: COLUMN_MAP["Next Calibration"] },
     ];
