@@ -250,7 +250,7 @@
 <script>
   // ── Config ──────────────────────────────────────────────────────────────────
   const SHEET_CSV_URL =
-    "https://docs.google.com/spreadsheets/d/e/2PACX-1vQxsHbirrqOd1h4W_TtvhphYMz4M9_1aN7h7E9RLq21v1qNLMis888i2o4Vx6SzZA/pub?gid=414073608&single=true&output=csv";
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vTdYLYWdeim6BdYpIIfc9PHnZs79zXVIPV1ksTuA1YLhsGZWgBgwvRKabmRh5hahw/pub?gid=1192677243&single=true&output=csv";
 
   // Map: display label → exact CSV column header (case-sensitive, must match your sheet)
   const COLUMN_MAP = {
@@ -467,7 +467,7 @@
       </div>
 
       <div class="card-footer">
-        <span class="footer-text">Shefa El-Orman Hospital · Clinical Engineering</span>
+        <span class="footer-text">Shefa El-Orman Hospital · Biomedical Engineering</span>
         <span class="footer-text">Fetched <span>${now}</span></span>
       </div>
     </div>`;
@@ -504,7 +504,7 @@
     );
 
     if (!row) {
-      error("Device Not Found", `No device found with serial number: <strong>${deviceId}</strong><br><br>Please check the QR code or contact Clinical Engineering.`);
+      error("Device Not Found", `No device found with serial number: <strong>${deviceId}</strong><br><br>Please check the QR code or contact Biomedical Engineering.`);
       return;
     }
 
