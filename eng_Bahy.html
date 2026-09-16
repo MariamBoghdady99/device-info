@@ -423,10 +423,10 @@
   function buildCard(row) {
     const name   = row[COLUMN_MAP["Item Name"]]    || "Unknown Device";
     const serial = row[COLUMN_MAP["Item Code"]] || "—";
-    const serial = row[COLUMN_MAP["Serial Number"]] || "—";
 
     // Info section fields
     const infoFields = [
+      { label: "MSerial Number",           key: "Serial Number",  mono: false },
       { label: "Manufacturer",           key: "Manuf.",  mono: false },
       { label: "Model",                  key: "Model",   mono: true  },
       { label: "Quantity",               key: "q", mono: false },
