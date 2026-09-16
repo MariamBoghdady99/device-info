@@ -451,11 +451,11 @@
         ${val(row[f.key])}
       </div>`).join("");
 
-    const dateHTML = dateFields.map(f => `
+    /*const dateHTML = dateFields.map(f => `
       <div class="field">
         <div class="field-label">${f.label}</div>
         ${dateVal(f.rawKey, row[f.key])}
-      </div>`).join("");
+      </div>`).join("");*/
 
     const now = new Date().toLocaleDateString("en-GB", { day:"2-digit", month:"short", year:"numeric" });
 
@@ -474,10 +474,7 @@
         <div class="fields-grid">${infoHTML}</div>
       </div>
 
-      <div class="card-section">
-        <div class="section-label">Maintenance &amp; Calibration</div>
-        <div class="fields-grid">${dateHTML}</div>
-      </div>
+      
 
       <div class="card-footer">
         <span class="footer-text">Shefa El-Orman Hospital · General Maintenance</span>
