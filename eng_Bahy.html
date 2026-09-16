@@ -250,26 +250,33 @@
 <script>
   // ── Config ──────────────────────────────────────────────────────────────────
   const SHEET_CSV_URL =
-    "https://docs.google.com/spreadsheets/d/e/2PACX-1vQxsHbirrqOd1h4W_TtvhphYMz4M9_1aN7h7E9RLq21v1qNLMis888i2o4Vx6SzZA/pub?gid=414073608&single=true&output=csv";
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vSJzA2GQRDAlJi_kmMPgE_zxubaH29Y66DBbPCNmvxJmW-SMN7cpbov0PCBFXsUcA/pubhtml";
 
   // Map: display label → exact CSV column header (case-sensitive, must match your sheet)
   const COLUMN_MAP = {
-    "Item Name"           : "Item Name (English)",
+    "Item Name"           : "Name",
+    "Item Code"           : "COOD",
     "Serial Number"       : "Serial number",
+    "Last PM"             : "Last PM",
+    "Next PM"             : "Next PM",
     "Manufacturer"        : "Manuf.",
     "Model"               : "Model",
-    "Department"          : "Depart.",
-    "Last PM Date"        : "PM date",
-    "PM Due Date"         : "PM Due date",
-    "Calibration Date"    : "Calibration Date",
-    "Next Calibration"    : "Next Calibration",
+    "Quantity"            : "q",
+    "Location"            : "Location",
+    "RM Number"           : "Rm Number",
+    "Manuf. Year"         : "Manuf. Year",
+    "Warranty Start Date"  : "Warranty Start Date",
+    "Warranty Finish Date" : "Warranty Finish Date",
+    "PM Frequence (Month)" : "PM Frequence (Month)",
+    "Supplier"             : "Supplier",
+    
   };
 
   // Which column is the lookup key (must match COLUMN_MAP value above)
-  const ID_COLUMN = "Serial number";
+  const ID_COLUMN = "COOD";
 
   // Date columns — used to compute status pills
-  const DUE_DATE_COLS = ["PM Due date", "Next Calibration"];
+  const DUE_DATE_COLS = ["Next PM"];
   // ────────────────────────────────────────────────────────────────────────────
 
   const app = document.getElementById("app");
@@ -415,21 +422,27 @@
 
   function buildCard(row) {
     const name   = row[COLUMN_MAP["Item Name"]]    || "Unknown Device";
+    const serial = row[COLUMN_MAP["Item Code"]] || "—";
     const serial = row[COLUMN_MAP["Serial Number"]] || "—";
 
     // Info section fields
     const infoFields = [
-      { label: "Manufacturer", key: "Manuf.",  mono: false },
-      { label: "Model",        key: "Model",   mono: true  },
-      { label: "Department",   key: "Depart.", mono: false },
+      { label: "Manufacturer",           key: "Manuf.",  mono: false },
+      { label: "Model",                  key: "Model",   mono: true  },
+      { label: "Quantity",               key: "q", mono: false },
+      { label: "Location",               key: "Location", mono: false },
+      { label: "RM Number",              key: "RM Number", mono: false },
+      { label: "Manuf. Year",            key: "Manuf. Year", mono: false },
+      { label: "Warranty Start Date",    key: "Warranty Start Date", mono: false },
+      { label: "Warranty Finish Date",   key: "Warranty Finish Date", mono: false },
+      { label: "PM Frequence (Month)",   key: "PM Frequence (Month)", mono: false },
+      { label: "Supplier",               key: "Supplier", mono: false },
     ];
 
     // Date section fields
     const dateFields = [
-      { label: "Last PM",       rawKey: "PM date",           key: COLUMN_MAP["Last PM Date"] },
-      { label: "PM Due",        rawKey: "PM Due date",       key: COLUMN_MAP["PM Due Date"] },
-      { label: "Last Calib.",   rawKey: "Calibration Date",  key: COLUMN_MAP["Calibration Date"] },
-      { label: "Next Calib.",   rawKey: "Next Calibration",  key: COLUMN_MAP["Next Calibration"] },
+      { label: "Last PM",       rawKey: "Last PM",           key: COLUMN_MAP["Last PM"] },
+      { label: "Next PM",        rawKey: "Next PM",       key: COLUMN_MAP["Next PM"] },
     ];
 
     const infoHTML = infoFields.map(f => `
