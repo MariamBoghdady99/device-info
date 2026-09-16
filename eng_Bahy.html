@@ -440,10 +440,7 @@
     ];
 
     // Date section fields
-    /*const dateFields = [
-      { label: "Last PM",       rawKey: "Last PM",           key: COLUMN_MAP["Last PM"] },
-      { label: "Next PM",        rawKey: "Next PM",       key: COLUMN_MAP["Next PM"] },
-    ];*/
+    
 
     const infoHTML = infoFields.map(f => `
       <div class="field">
@@ -451,11 +448,7 @@
         ${val(row[f.key])}
       </div>`).join("");
 
-    /*const dateHTML = dateFields.map(f => `
-      <div class="field">
-        <div class="field-label">${f.label}</div>
-        ${dateVal(f.rawKey, row[f.key])}
-      </div>`).join("");*/
+    
 
     const now = new Date().toLocaleDateString("en-GB", { day:"2-digit", month:"short", year:"numeric" });
 
