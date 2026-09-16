@@ -273,7 +273,7 @@
   };
 
   // Which column is the lookup key (must match COLUMN_MAP value above)
-  const ID_COLUMN = "Item Code";
+  const ID_COLUMN = "COOD";
 
   // Date columns — used to compute status pills
   const DUE_DATE_COLS = ["Next PM"];
@@ -480,7 +480,7 @@
       </div>
 
       <div class="card-footer">
-        <span class="footer-text">Shefa El-Orman Hospital · Biomedical Engineering</span>
+        <span class="footer-text">Shefa El-Orman Hospital · General Maintenance</span>
         <span class="footer-text">Fetched <span>${now}</span></span>
       </div>
     </div>`;
@@ -517,7 +517,7 @@
     );
 
     if (!row) {
-      error("Device Not Found", `No device found with serial number: <strong>${deviceId}</strong><br><br>Please check the QR code or contact Biomedical Engineering.`);
+      error("Device Not Found", `No device found with serial number: <strong>${deviceId}</strong><br><br>Please check the QR code or contact General Maintenance.`);
       return;
     }
 
