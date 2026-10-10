@@ -253,19 +253,21 @@
     "https://docs.google.com/spreadsheets/d/e/2PACX-1vQxsHbirrqOd1h4W_TtvhphYMz4M9_1aN7h7E9RLq21v1qNLMis888i2o4Vx6SzZA/pub?gid=200216514&single=true&output=csv";
 
   // Map: display label → exact CSV column header (case-sensitive, must match your sheet)
+ 
   const COLUMN_MAP = {
-    "Item Name"           : "Item Name (English)",
-    "Serial Number"       : "Serial number",
-    "Manufacturer"        : "Manuf.",
-    "Model"               : "Model",
-    "Department"          : "Depart.",
-    "PM Date"        : "PM date",
-    "PM Authorized Personal"   : "PM Authorized Personal"
-    "PM Due Date"         : "PM Due date",
-    "Calibration Date"    : "Calibration Date",
-    "Calib. Authorized Personal"   : "Calib. Authorized Personal"
-    "Next Calibration"    : "Next Calibration",
+    "Item Name": "Item Name (English)",
+    "Serial Number": "Serial number",
+    "Manufacturer": "Manuf.",
+    "Model": "Model",
+    "Department": "Depart.",
+    "PM Date": "PM date",
+    "PM Authorized Personal": "PM Authorized Personal",
+    "PM Due Date": "PM Due date",
+    "Calibration Date": "Calibration Date",
+    "Calib. Authorized Personal": "Calib. Authorized Personal",
+    "Next Calibration": "Next Calibration"
   };
+
 
   // Which column is the lookup key (must match COLUMN_MAP value above)
   const ID_COLUMN = "Serial number";
