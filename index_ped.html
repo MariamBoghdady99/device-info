@@ -249,23 +249,26 @@
 
 <script>
   // ── Config ──────────────────────────────────────────────────────────────────
-  const SHEET_CSV_URL =
-    "https://docs.google.com/spreadsheets/d/e/2PACX-1vQxsHbirrqOd1h4W_TtvhphYMz4M9_1aN7h7E9RLq21v1qNLMis888i2o4Vx6SzZA/pub?gid=414073608&single=true&output=csv";
+const SHEET_CSV_URL =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQxsHbirrqOd1h4W_TtvhphYMz4M9_1aN7h7E9RLq21v1qNLMis888i2o4Vx6SzZA/pub?output=csv";
 
   // Map: display label → exact CSV column header (case-sensitive, must match your sheet)
+ 
   const COLUMN_MAP = {
-    "Item Name"           : "Item Name (English)",
-    "Serial Number"       : "Serial number",
-    "Manufacturer"        : "Manuf.",
-    "Model"               : "Model",
-    "Department"          : "Depart.",
-    "PM Date"        : "PM date",
-    "PM Authorized Personal"   : "PM Authorized Personal"
-    "PM Due Date"         : "PM Due date",
-    "Calibration Date"    : "Calibration Date",
-    "Calib. Authorized Personal"   : "Calib. Authorized Personal"
-    "Next Calibration"    : "Next Calibration",
+    "CODE":      "CODE",
+    "Item Name": "Item Name (English)",
+    "Serial Number": "Serial number",
+    "Manufacturer": "Manuf.",
+    "Model": "Model",
+    "Department": "Depart.",
+    "PM Date": "PM date",
+    "PM Authorized Personal": "PM Authorized Personal",
+    "PM Due Date": "PM Due date",
+    "Calibration Date": "Calibration Date",
+    "Calib. Authorized Personal": "Calib. Authorized Personal",
+    "Next Calibration": "Next Calibration"
   };
+
 
   // Which column is the lookup key (must match COLUMN_MAP value above)
   const ID_COLUMN = "Serial number";
@@ -282,7 +285,7 @@
     render(`<div class="state-card">
       <div class="spinner"></div>
       <h2>Loading device data…</h2>
-      <p>Fetching from the Database</p>
+      <p>Fetching from the database</p>
     </div>`);
   }
 
@@ -421,6 +424,7 @@
 
     // Info section fields
     const infoFields = [
+      { label: "CODE",         key: "CODE",    mono: false },
       { label: "Manufacturer", key: "Manuf.",  mono: false },
       { label: "Model",        key: "Model",   mono: true  },
       { label: "Department",   key: "Depart.", mono: false },
@@ -430,8 +434,8 @@
     const dateFields = [
       { label: "PM Date",            rawKey: "PM date",           key: COLUMN_MAP["PM Date"] },
       { label: "PM Authorized Personal",    rawKey: "PM Authorized Personal",           key: COLUMN_MAP["PM Authorized Personal"] },
-      { label: "PM Due",        rawKey: "PM Due date",       key: COLUMN_MAP["PM Due Date"] },
-      { label: "Last Calib.",   rawKey: "Calibration Date",  key: COLUMN_MAP["Calibration Date"] },
+      { label: "PM Due Date",        rawKey: "PM Due date",       key: COLUMN_MAP["PM Due Date"] },
+      { label: "Calib. Date",   rawKey: "Calibration Date",  key: COLUMN_MAP["Calibration Date"] },
       { label: "Calib. Authorized Personal",    rawKey: "Calib. Authorized Personal",           key: COLUMN_MAP["Calib. Authorized Personal"] },
       { label: "Next Calib.",   rawKey: "Next Calibration",  key: COLUMN_MAP["Next Calibration"] },
     ];
@@ -497,7 +501,7 @@
       const text = await res.text();
       rows = parseCSV(text);
     } catch (e) {
-      error("Could not load data", `Failed to fetch from the Database.<br><small>${e.message}</small>`);
+      error("Could not load data", `Failed to fetch from The Database.<br><small>${e.message}</small>`);
       return;
     }
 
